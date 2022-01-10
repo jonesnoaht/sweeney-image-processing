@@ -4,13 +4,10 @@
 #@ File (label = "Output directory", style = "directory") output
 #@ String (label = "File suffix", value = ".tif") suffix
 
-<<<<<<< HEAD
 Dialog.create("Warning");
 Dialog.addMessage("This will go through all containing folders.\n If the channels are inconsistent between images, then this program may not work properly.");
 Dialog.show();
 
-=======
->>>>>>> a256bc6b111e841392d945462ef937c56323ba77
 function grabChannelsFromFolderesImage(input) { 
 	list = getFileList(input);
 	list = Array.sort(list);
@@ -56,7 +53,11 @@ function myDialog(channels) {
 			Table.set(nameArray[j], i-1, arrayCh[j]);
 		}
 	}
-<<<<<<< HEAD
+	ChannelMetadata = List.getList();
+	return ChannelMetadata;
+}
+
+Stack.getDimensions(width, height, channels, slices, frames);
 
 	ChannelMetadata = List.getList();
 	return ChannelMetadata;
@@ -64,15 +65,6 @@ function myDialog(channels) {
 
 Stack.getDimensions(width, height, channels, slices, frames);
 
-=======
-
-	ChannelMetadata = List.getList();
-	return ChannelMetadata;
-}
-
-Stack.getDimensions(width, height, channels, slices, frames);
-
->>>>>>> a256bc6b111e841392d945462ef937c56323ba77
 grabChannelsFromFolderesImage(input);
 
 myDialog(channels);
