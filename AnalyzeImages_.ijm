@@ -3,6 +3,7 @@
 #@ File (label = "Input directory", style = "directory") input
 #@ File (label = "Output directory", style = "directory") output
 #@ String (label = "File suffix", value = ".tif") suffix
+#@ boolean (label = "Check channel numbers", value = true) chChNumCheckbox
 #@ boolean (label = "Import channel info", value = false) chInfoCheckbox
 #@ File (label = "Channel Info (optional)", style="open", value = "", required = false) chInfoFile
 
@@ -10,10 +11,7 @@
 //output = "/Users/noahtjones/Dropbox (UFL)/Noah Notebook-Sweeney/Collaborations/Matt/Set 3/Myo6/12152021/cropped B4/test-output";
 //suffix = ".tif";
 
-// Dialog.create("Warning");
-// Dialog.addMessage("This will go through all containing folders.\nIf the channels are inconsistent between images, then this program may not work properly.");
-// Dialog.show();
-
+getMetadata("Info");
 
 function grabChannelsFromFoldersImage(input) { 
 	list = getFileList(input);
@@ -245,7 +243,7 @@ function processFile(input, output, file, chinfotable) {
 			roiManager("deselect");
 			roiManager("select", "convex_hull");
 			run("Clear Results");
-			roiManager("multi-measure measure_all");
+			roiManager("multi-measure one"); // roiManager("multi-measure measure_all");
 			Roi.remove;
 			tableCurrentHeadings = String.getResultsHeadings;
 			tHeads = split(tableCurrentHeadings);
@@ -331,7 +329,9 @@ setOption("BlackBackground", true);
 run("Set Measurements...", "area mean standard modal min centroid center perimeter bounding fit shape feret's integrated median skewness kurtosis area_fraction stack display redirect=None decimal=3");
 
 // go!!!
-checkFolder(input, channels);
+if (chChNumCheckbox == true) {
+	checkFolder(input, channels);
+}
 processFolder(input, chinfotable);
 
 a = getList("window.titles");
