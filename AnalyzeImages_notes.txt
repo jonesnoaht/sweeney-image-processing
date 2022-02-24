@@ -1,0 +1,67 @@
+makeSelection("polygon", us_xpoints, us_ypoints);
+roiManager("add");
+nRoi = roiManager("count");
+nRoiMO = nRoi - 1;
+roiManager("select", nRoiMO);
+roiManager("rename", "user_selection");
+
+		n = roiManager('count');
+		for (i = 0; i < n;) {
+    		roiManager('select', i);
+    		if (Roi.getName != "user_selection") {
+				roiManager("delete");
+				n = n - 1;
+			} else {
+				i = i + 1;
+			}
+		}
+
+
+// duplicate and analyze particles
+isForParticle = Table.get("Particle", chRow, chinfotable);
+		if (isForParticle == 1) {
+		run("Clear Results");
+		run("Analyze Particles...", "size=0-Infinity show=Outlines display exclude clear include summarize add in_situ");
+		updateResults();
+
+		roiManager("reset");
+		
+		//selectWindow(firstOpen);
+		//setUserSelection(us_xpoints, us_ypoints, us_name);
+
+		tableCurrentHeadings = String.getResultsHeadings;
+		tHeads = split(tableCurrentHeadings);
+		emptyArray = newArray();
+		tableRefParticles = "analyze_particles-ch_" + chNum;
+		
+		// if there is no table, make one
+		if (isOpen(tableRefParticles) == 0) {
+			Table.create(tableRefParticles);
+			for (tHeadsIndex = 1; tHeadsIndex < tHeads.length; tHeadsIndex++) {
+				Table.setColumn(tHeads[tHeadsIndex], emptyArray, tableRefParticles);
+			}
+		} 
+		Table.update(tableRefParticles);
+		//selectWindow("analyze_particles-ch_" + chNum);
+		tRows = Table.size("Results");
+		for (row = 0; row < tRows; row++) {
+			Table.update(tableRefParticles);
+			colRefLen = Table.size(tableRefParticles);
+			for (col = 0; col < tHeads.length; col++) {
+				val = Table.get(tHeads[col], row, "Results");
+				labels = Table.getColumn("Label", "Results");
+				print("\n");
+				print(tableRefParticles);
+				print("Label: " + labels[row]);
+				print("row: " + row);
+				print("col: " + col + " (" + tHeads[col] + ")");
+				print(val);
+				if (col > 0) {
+					Table.set(tHeads[col], colRefLen, val, tableRefParticles);
+				} else { 
+					Table.set("Label", colRefLen, labels[row], tableRefParticles);
+				}
+				Table.update(tableRefParticles);
+			}
+		}
+}
